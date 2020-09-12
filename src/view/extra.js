@@ -1,8 +1,14 @@
-export const createFilmsExtraMarkup = () => {
+export const createFilmsExtraMarkup = (type) => {
+  const title = type === `Top rated`
+    ? `<h2 class="films-list__title">Top rated</h2>`
+    : `<h2 class="films-list__title">Most commented</h2>`;
+
+  const id = type.toLowerCase().split(` `).join(`-`);
+
   return (
     `<section class="films-list--extra">
-      <h2 class="films-list__title">Top rated</h2>
-      <div class="films-list__container"></div>
+      ${title}
+      <div class="films-list__container" id="extra-${id}"></div>
     </section>`
   );
 };
