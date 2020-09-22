@@ -1,3 +1,10 @@
+export const COMMENT_EMOTIONS = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`
+];
+
 export const FILM_AGE_RATING = [
   `G`,
   `PG`,

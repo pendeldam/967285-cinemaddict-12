@@ -7,7 +7,11 @@ export const createFiltersMarkup = (films) => {
 
   const filterMarkup = Object.entries(filters)
     .map(([name, count]) => {
-      return `<a href="#${name.toLowerCase()}" class="main-navigation__item">${name} <span class="main-navigation__item-count">${count}</span></a>`;
+      return (
+        `<a href="#${name.toLowerCase()}" class="main-navigation__item">${name}
+           <span class="main-navigation__item-count">${count > 5 ? `` : count}</span>
+        </a>`
+      );
     })
     .join(`\n`);
 

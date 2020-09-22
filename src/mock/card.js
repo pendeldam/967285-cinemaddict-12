@@ -1,5 +1,10 @@
-import {FILM_NAMES, FILM_GENRES, FILM_DESCRIPTION, FILM_DIRECTORS, FILM_ACTORS, FILM_COUNTRIES, FILM_AGE_RATING} from '../const.js';
+import {COMMENT_EMOTIONS, FILM_NAMES, FILM_GENRES, FILM_DESCRIPTION, FILM_DIRECTORS, FILM_ACTORS, FILM_COUNTRIES, FILM_AGE_RATING} from '../const.js';
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArray} from '../utils.js';
+
+const FILM_COUNT = 5;
+let commentIdCounter = 0;
+let comments = [];
+
 
 const getFilmName = (name) => {
   return name
@@ -10,6 +15,17 @@ const getFilmName = (name) => {
     .join(` `);
 };
 
+const generateRandomDate = () => {
+  const day = getRandomIntegerNumber(1, 31);
+  const month = getRandomIntegerNumber(0, 12);
+  const year = getRandomIntegerNumber(1930, 2000);
+  const hour = getRandomIntegerNumber(0, 24);
+  const minute = getRandomIntegerNumber(0, 60);
+  const date = new Date(year, month, day, hour, minute);
+
+  return date;
+};
+
 const getFilmWriters = () => getRandomArrayItem(FILM_DIRECTORS);
 
 const getFilmActors = () => getRandomArrayItem(FILM_ACTORS);
@@ -18,25 +34,35 @@ const getFilmGenre = () => getRandomArrayItem(FILM_GENRES);
 
 const getRandomText = () => getRandomArrayItem(FILM_DESCRIPTION.split(`.`));
 
-const getRandomDate = () => {
-  const day = getRandomIntegerNumber(1, 31);
-  const month = getRandomIntegerNumber(0, 12);
-  const year = getRandomIntegerNumber(1930, 2000);
-  const date = new Date(year, month, day);
+const getRandomComment = () => {
+  const date = generateRandomDate();
+  date.setFullYear(2020);
+  date.setMonth(8);
 
-  return date;
+  const comment = {
+    id: commentIdCounter++,
+    text: getRandomArray(getRandomIntegerNumber(1, 3), getRandomText).join(`\n`),
+    emotion: getRandomArrayItem(COMMENT_EMOTIONS),
+    author: getRandomArrayItem(FILM_DIRECTORS),
+    date
+  };
+
+  comments.push(comment);
+
+  return comment.id;
 };
 
-export const generateCards = (count) => {
+const generateCards = (count) => {
   return new Array(count)
     .fill(``)
     .map((card, index) => {
       const poster = getRandomArrayItem(FILM_NAMES);
       const getRating = (min, max) => String(Math.random() * (max - min) + min).substring(0, 3);
-      const date = getRandomDate();
+      const date = generateRandomDate();
+      const id = index;
 
       card = {
-        id: index,
+        id,
         poster,
         filmRating: +getRating(5, 10),
         name: getFilmName(poster),
@@ -51,7 +77,7 @@ export const generateCards = (count) => {
         ageRating: getRandomArrayItem(FILM_AGE_RATING),
         genre: getRandomArray(getRandomIntegerNumber(1, 3), getFilmGenre),
         description: getRandomArray(getRandomIntegerNumber(3, 5), getRandomText).join(`\n`),
-        comments: getRandomIntegerNumber(0, 10),
+        comments: getRandomArray(getRandomIntegerNumber(1, 5), getRandomComment),
         isWatchLater: Math.random() > 0.5 ? true : false,
         isWatchedAlready: Math.random() > 0.5 ? true : false,
         isFavorite: Math.random() > 0.5 ? true : false
@@ -60,3 +86,6 @@ export const generateCards = (count) => {
       return card;
     });
 };
+
+export const cards = generateCards(FILM_COUNT);
+export {comments};

@@ -7,13 +7,14 @@ import {createFilmCardFullMarkup} from './view/card-full.js';
 import {createShowMoreBtn} from './view/show-more-button.js';
 import {createFilmsExtraMarkup} from './view/extra.js';
 import {createFilmsCountMarkup} from './view/count.js';
-import {generateCards} from './mock/card.js';
+import {cards, comments} from './mock/card.js';
 import {getRandomIntegerNumber} from './utils.js';
 
-const FILMS_COUNT = 5;
-const cards = generateCards(FILMS_COUNT);
 const mainEl = document.querySelector(`.main`);
 const footerEl = document.querySelector(`.footer__statistics`);
+
+console.log(cards);
+console.log(comments);
 
 const render = (container, element, location) => {
   container.insertAdjacentHTML(location, element);
@@ -30,17 +31,20 @@ cards.forEach((card) => render(filmListEl, createFilmCardMarkup(card), `beforeen
 render(filmListEl, createShowMoreBtn(), `afterend`);
 
 const getExtras = (films, type) => {
-  const sortByType = films.sort((a, b) => b[type] - a[type]);
-  const allEqual = films.filter((film) => film[type] === sortByType[0][type]);
+  const sortedByType = type === `comments`
+    ? films.sort((a, b) => b[type].length - a[type].length)
+    : films.sort((a, b) => b[type] - a[type]);
 
-  if (allEqual.length === films.length) {
-    if (allEqual[0][type] === 0) {
+  const allEqualed = films.filter((film) => film[type] === sortedByType[0][type]);
+
+  if (allEqualed.length === films.length) {
+    if (allEqualed[0][type] === 0) {
       return false;
     }
 
     let result = [];
 
-    if (allEqual.length > 1) {
+    if (allEqualed.length > 2) {
       result.push(films[getRandomIntegerNumber(0, films.length)]);
       result.push(films.find((film) => film.id !== result[0].id));
       return result;
@@ -48,7 +52,7 @@ const getExtras = (films, type) => {
     return films;
   }
 
-  return sortByType.slice(0, 2);
+  return sortedByType.slice(0, 2);
 };
 
 const renderExtras = (array, type) => {
@@ -61,7 +65,7 @@ const renderExtras = (array, type) => {
   });
 };
 
-const topRated = getExtras(cards, `rating`);
+const topRated = getExtras(cards, `filmRating`);
 const topComments = getExtras(cards, `comments`);
 
 if (topRated.length) {
@@ -73,4 +77,4 @@ if (topComments.length) {
 }
 
 render(footerEl, createFilmsCountMarkup(cards.length), `beforeend`);
-render(footerEl, createFilmCardFullMarkup(cards[0]), `afterend`);
+render(footerEl, createFilmCardFullMarkup(cards[0], comments), `afterend`);

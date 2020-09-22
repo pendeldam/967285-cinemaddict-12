@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
@@ -12,15 +14,11 @@ export const getRandomArray = (length, cb) => {
     .map(cb);
 };
 
-const castTimeFormat = (value) => {
-  return value < 10 ? `${value}` : String(value);
-};
-
 export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
-
-  return `${hours}:${minutes}`;
+  console.log(date)
+  const now = new Date();
+  const diff = moment(date).diff(now);
+  return moment.duration(diff).humanize(true);
 };
 
 export const formatDuration = (value) => {
