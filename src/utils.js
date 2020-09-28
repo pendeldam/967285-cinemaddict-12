@@ -15,7 +15,6 @@ export const getRandomArray = (length, cb) => {
 };
 
 export const formatTime = (date) => {
-  console.log(date)
   const now = new Date();
   const diff = moment(date).diff(now);
   return moment.duration(diff).humanize(true);

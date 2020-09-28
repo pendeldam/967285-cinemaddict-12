@@ -10,6 +10,8 @@ import {createFilmsCountMarkup} from './view/count.js';
 import {cards, comments} from './mock/card.js';
 import {getRandomIntegerNumber} from './utils.js';
 
+const CARD_COUNT_ON_SHOW_MORE = 5;
+
 const mainEl = document.querySelector(`.main`);
 const footerEl = document.querySelector(`.footer__statistics`);
 
@@ -26,14 +28,41 @@ render(mainEl, createSortMarkup(), `beforeend`);
 render(mainEl, createFilmsListMarkup(), `beforeend`);
 
 const filmListEl = mainEl.querySelector(`.films-list__container`);
-cards.forEach((card) => render(filmListEl, createFilmCardMarkup(card), `beforeend`));
+let shownCards = 0;
 
-render(filmListEl, createShowMoreBtn(), `afterend`);
+const handleShowMoreButtonClick = () => {
+  cards
+  .slice(shownCards, Math.min(shownCards + CARD_COUNT_ON_SHOW_MORE, cards.length))
+  .forEach((card) => render(filmListEl, createFilmCardMarkup(card), `beforeend`));
+
+  shownCards += CARD_COUNT_ON_SHOW_MORE;
+
+  if (shownCards >= cards.length) {
+    mainEl.querySelector(`.films-list__show-more`).remove();
+  }
+};
+
+const renderCards = (items) => {
+  items
+  .slice(0, CARD_COUNT_ON_SHOW_MORE)
+  .forEach((item) => render(filmListEl, createFilmCardMarkup(item), `beforeend`));
+
+  shownCards += CARD_COUNT_ON_SHOW_MORE;
+
+  if (shownCards < cards.length) {
+    render(filmListEl, createShowMoreBtn(), `afterend`);
+  }
+
+  mainEl.querySelector(`.films-list__show-more`).addEventListener(`click`, handleShowMoreButtonClick);
+};
+
+renderCards(cards);
+
 
 const getExtras = (films, type) => {
   const sortedByType = type === `comments`
-    ? films.sort((a, b) => b[type].length - a[type].length)
-    : films.sort((a, b) => b[type] - a[type]);
+    ? films.slice().sort((a, b) => b[type].length - a[type].length)
+    : films.slice().sort((a, b) => b[type] - a[type]);
 
   const allEqualed = films.filter((film) => film[type] === sortedByType[0][type]);
 
@@ -77,4 +106,4 @@ if (topComments.length) {
 }
 
 render(footerEl, createFilmsCountMarkup(cards.length), `beforeend`);
-render(footerEl, createFilmCardFullMarkup(cards[0], comments), `afterend`);
+// render(footerEl, createFilmCardFullMarkup(cards[0], comments), `afterend`);

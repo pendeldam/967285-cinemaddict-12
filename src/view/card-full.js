@@ -35,9 +35,11 @@ const createFilmControlsMarkup = (controls) => {
 };
 
 const createCommentsMarkup = (comments, commentsModel) => {
-  return comments.map((it) => {
-    const comment = commentsModel[it];
-
+  return comments.map((id) => {
+    const comment = commentsModel.find((it) => id === it.id);
+    if (!comment) {
+      return ``;
+    }
     return (
       `<li class="film-details__comment">
         <span class="film-details__comment-emoji">
@@ -120,9 +122,7 @@ export const createFilmCardFullMarkup = (card, commentsModel) => {
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-          <ul class="film-details__comments-list">
-            ${createCommentsMarkup(comments, commentsModel)}
-          </ul>
+          ${comments.length ? `<ul class="film-details__comments-list">${createCommentsMarkup(comments, commentsModel)}</ul>` : ``}
 
           <div class="film-details__new-comment">
             <div for="add-emoji" class="film-details__add-emoji-label"></div>

@@ -1,7 +1,7 @@
 import {COMMENT_EMOTIONS, FILM_NAMES, FILM_GENRES, FILM_DESCRIPTION, FILM_DIRECTORS, FILM_ACTORS, FILM_COUNTRIES, FILM_AGE_RATING} from '../const.js';
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArray} from '../utils.js';
 
-const FILM_COUNT = 5;
+const FILM_COUNT = 15;
 let commentIdCounter = 0;
 let comments = [];
 
